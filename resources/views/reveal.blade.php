@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Secret Revealed - Shadow Key</title>
@@ -16,55 +17,53 @@
             align-items: center;
             justify-content: center;
         }
+
         .card {
             border-radius: 15px;
         }
-        .secret-box {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            word-break: break-word;
-            font-weight: 500;
-        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7">
 
-            <div class="card shadow-lg p-4">
-                <div class="card-body text-center">
+                <div class="card shadow-lg p-4">
+                    <div class="card-body text-center">
 
-                    <h2 class="mb-3 text-primary">🔓 Secret Revealed</h2>
-                    <p class="text-muted">
-                        This secret can only be viewed once.
-                    </p>
+                        <h2 class="mb-3 text-primary">🔓 Secret Revealed</h2>
+                        <p class="text-muted">
+                            This secret can only be viewed once.
+                        </p>
 
-                    <div class="secret-box mt-4">
-                        {{ $secret }}
+
+                        <div class="alert alert-danger mt-4">
+                            🔥 This secret has now been permanently deleted.
+                        </div>
+
+                        <a href="{{ route('secret.create') }}" class="btn btn-dark mt-3">
+                            Create Another Secret
+                        </a>
+
                     </div>
-
-                    <div class="alert alert-danger mt-4">
-                        🔥 This secret has now been permanently deleted.
-                    </div>
-
-                    <a href="{{ route('secret.create') }}" 
-                       class="btn btn-dark mt-3">
-                        Create Another Secret
-                    </a>
-
                 </div>
-            </div>
 
-            <div class="text-center text-white mt-3">
-                <small>Shadow Key • One-Time Secure Sharing</small>
-            </div>
+                <div class="text-center text-white mt-3">
+                    <small>Shadow Key • One-Time Secure Sharing</small>
+                </div>
 
+            </div>
         </div>
     </div>
-</div>
+
+    <script>
+        window.onload = function () {
+            alert("Your Secret is:\n\n" + {!! json_encode($secret) !!});
+        };
+    </script>
 
 </body>
+
 </html>
