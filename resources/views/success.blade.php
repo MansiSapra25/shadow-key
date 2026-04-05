@@ -45,7 +45,7 @@
                                value="{{ url('/reveal/' . $uuid) }}"
                                readonly>
 
-                        <button class="btn btn-dark" onclick="copyLink()">
+                        <button id="copyBtn" class="btn btn-dark" onclick="copyLink()">
                             Copy
                         </button>
                     </div>
@@ -70,14 +70,51 @@
 <script>
 function copyLink() {
     const linkInput = document.getElementById('secretLink');
+    const copyBtn = document.getElementById('copyBtn');
+    const originalText = copyBtn.innerHTML;
 
-    navigator.clipboard.writeText(linkInput.value).then(function() {
-        document.getElementById('copyMessage').innerHTML =
-            '<div class="alert alert-success mt-3">Link copied successfully!</div>';
-    }).catch(function() {
-        document.getElementById('copyMessage').innerHTML =
-            '<div class="alert alert-danger mt-3">Failed to copy link.</div>';
-    });
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999);
+
+    const textToCopy = linkInput.value;
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            updateSuccess(copyBtn, originalText);
+        }).catch(() => {
+            fallbackCopy(textToCopy, copyBtn, originalText);
+        });
+    } else {
+        fallbackCopy(textToCopy, copyBtn, originalText);
+    }
+}
+
+function fallbackCopy(text, btn, originalText) {
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            updateSuccess(btn, originalText);
+        } else {
+            showError();
+        }
+    } catch (err) {
+        showError();
+    }
+}
+
+function updateSuccess(btn, originalText) {
+    btn.innerHTML = '✅ Copied!';
+    btn.classList.replace('btn-dark', 'btn-success');
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.replace('btn-success', 'btn-dark');
+    }, 2000);
+}
+
+function showError() {
+    const msgDiv = document.getElementById('copyMessage');
+    msgDiv.innerHTML = '<div class="alert alert-danger mt-3">Failed to copy automatically. Please copy manually.</div>';
+    setTimeout(() => { msgDiv.innerHTML = ''; }, 3000);
 }
 </script>
 
