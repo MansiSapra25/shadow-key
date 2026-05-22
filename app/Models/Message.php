@@ -10,7 +10,7 @@ class Message extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $fillable = ['content', 'expires_at'];
+    protected $fillable = ['content', 'expires_at', 'status', 'revealed_at'];
 
     protected static function boot()
     {

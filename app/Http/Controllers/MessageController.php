@@ -18,7 +18,8 @@ class MessageController extends Controller
 
         $message = Message::create([
             'content' => Crypt::encryptString($request->secret),
-            'expires_at' => Carbon::now()->addMinutes(30)
+            'expires_at' => Carbon::now()->addMinutes(30),
+            'status' => 'created'
         ]);
 
         return redirect()->route('secret.success', $message->id);
@@ -27,13 +28,16 @@ class MessageController extends Controller
     {
         $message = Message::find($uuid);
 
-        if (!$message || $message->expires_at < now()) {
+        if (!$message || $message->expires_at < now() || $message->status === 'revealed') {
             return view('expired');
         }
 
         $decrypted = Crypt::decryptString($message->content);
 
-        $message->delete(); // ONE TIME DELETE
+        $message->update([
+            'status' => 'revealed',
+            'revealed_at' => now()
+        ]);
 
         return view('reveal', ['secret' => $decrypted]);
     }
